@@ -1,8 +1,8 @@
 package com.example.hellondk
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.TextView
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import com.example.hellondk.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -15,18 +15,28 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Example of a call to a native method
-        binding.sampleText.text = stringFromJNI()
+        with(binding) {
+            btnSave.setOnClickListener {
+                val username = inputName.text.toString()
+                txtGreeting.text = getHelloUser(username)
+            }
+
+            btnNdk.setOnClickListener {
+                txtGreeting.text = getHelloNdk()
+            }
+
+            btnWorld.setOnClickListener {
+                txtGreeting.text = getHelloWorld()
+            }
+
+        }
     }
 
-    /**
-     * A native method that is implemented by the 'hellondk' native library,
-     * which is packaged with this application.
-     */
-    external fun stringFromJNI(): String
+    external fun getHelloUser(username: String): String
+    external fun getHelloNdk(): String
+    external fun getHelloWorld(): String
 
     companion object {
-        // Used to load the 'hellondk' library on application startup.
         init {
             System.loadLibrary("hellondk")
         }
